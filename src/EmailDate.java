@@ -27,6 +27,11 @@ import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
 import com.google.api.services.gmail.model.MessagePartHeader;
 
+/**
+ * 
+ * @author declan.ayres
+ *
+ */
 public class EmailDate {
 
 	private static final String APP_NAME = "Gmail API Quickstart";
