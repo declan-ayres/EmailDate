@@ -46,6 +46,7 @@ public class EmailDate {
 
 	public static void main(String[] args) throws Exception {
 
+		// Authorization of bullhorn Api
 		final String CLIENT_ID = "71eb9c1a-27e1-4bb6-8c60-8f835cc51651";
 		final String CLIENT_SECRET = "lU5yFm9ypiLPctFGzidBaXYV7c53Drie";
 
@@ -65,6 +66,7 @@ public class EmailDate {
 		restToken = token.get("BhRestToken").asText();
 		entityApi = BHRestUtil.getEntityApi(token);
 
+		// Get all the candidates by search
 		int start = 0;
 		ObjectNode candidates = entityApi.search(
 				BHRestApi.Entity.ENTITY_TYPE.CANDIDATE, restToken,
@@ -77,6 +79,7 @@ public class EmailDate {
 
 		ObjectNode toUpdate;
 
+		// Authorization of Gmail API
 		httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 		dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
 
@@ -127,6 +130,7 @@ public class EmailDate {
 
 		int count = 0;
 
+		// Run through each candidate
 		for (int index = 0; index < candidates.path("total").intValue(); index++) {
 			System.out.println(index);
 
@@ -146,6 +150,7 @@ public class EmailDate {
 			final String email3 = candidates.path("data").get(count)
 					.path("email3").asText();
 
+			// find out which emails the candidate has
 			if (email != "" && email2 == ""
 					&& (email3 == "" || email3.equals("Not Applicable"))) {
 				query = "in:inbox from:" + "(+" + email + ") after:2014/6/9";
@@ -208,6 +213,8 @@ public class EmailDate {
 								+ ")) after:2014/6/9").execute();
 			}
 
+			// Copy the list contents into a for-loop-readable arraylist
+
 			List<Message> messages = new ArrayList<Message>();
 			while (list.getMessages() != null) {
 				messages.addAll(list.getMessages());
@@ -221,9 +228,13 @@ public class EmailDate {
 				}
 			}
 
+			// Check to see whether candidate has any messages
+
 			if (list != null) {
 
 				System.out.println(messages);
+
+				// Go through the messages of the candidate
 
 				for (final Message msgId : messages) {
 					System.out.println(candidates.path("data").get(count)
@@ -276,6 +287,8 @@ public class EmailDate {
 							.filter(h -> h.getName().equals("Date"))
 							.findFirst().orElse(null);
 
+					// Convert the date to format the candidate's date
+
 					if (date.getValue().charAt(0) != 'S'
 							&& date.getValue().charAt(0) != 'M'
 							&& date.getValue().charAt(0) != 'T'
@@ -283,14 +296,13 @@ public class EmailDate {
 							&& date.getValue().charAt(0) != 'F') {
 						dateFormat = new SimpleDateFormat(
 								"dd MMM yyyy HH:mm:ss ZZZZ");
-					} else if (date.getValue().charAt(8) == '0' || date.getValue().charAt(8) == '1' ) {
-						
+					} else if (date.getValue().charAt(8) == '0'
+							|| date.getValue().charAt(8) == '1') {
+
 						dateFormat = new SimpleDateFormat(
 								"EEE, dd MM yyyy HH:mm:ss");
-						
-						
-					} else
-					{
+
+					} else {
 						dateFormat = new SimpleDateFormat(
 								"EEE, dd MMM yyyy HH:mm:ss ZZZZ");
 					}
@@ -300,7 +312,7 @@ public class EmailDate {
 					System.out.println(parsedDate);
 
 					time = parsedDate.getTime();
-
+					// Adjust the date to match local timezone
 					switch (date.getValue().charAt(
 							(int) date.getValue().length() - 3)) {
 					case '0':
@@ -332,7 +344,8 @@ public class EmailDate {
 						break;
 
 					}
-
+					// Update the candidate's most recent inbound email with the
+					// date, represented as epoch milliseconds
 					toUpdate = entityApi.get(
 							BHRestApi.Entity.ENTITY_TYPE.CANDIDATE, restToken,
 							candidates.path("data").get(count).path("id")
