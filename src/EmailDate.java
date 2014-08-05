@@ -241,7 +241,7 @@ public class EmailDate {
 							.stream()
 							.filter(h -> (h.getName().equals("To") && h
 									.getValue().toLowerCase()
-									.contains("jibu.george@314ecorp.com"))
+									.contains("bullhorn@314ecorp.com"))
 									|| (h.getName().equalsIgnoreCase("Cc") && h
 											.getValue().toLowerCase()
 											.contains("bullhorn@314ecorp.com")))
