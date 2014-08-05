@@ -65,7 +65,7 @@ public class EmailDate {
 		restToken = token.get("BhRestToken").asText();
 		entityApi = BHRestUtil.getEntityApi(token);
 
-		int start = 5000;
+		int start = 0;
 		ObjectNode candidates = entityApi.search(
 				BHRestApi.Entity.ENTITY_TYPE.CANDIDATE, restToken,
 				"isDeleted:0 AND NOT status:archive",
@@ -127,10 +127,10 @@ public class EmailDate {
 
 		int count = 0;
 
-		for (int index = 5000; index < candidates.path("total").intValue(); index++) {
+		for (int index = 0; index < candidates.path("total").intValue(); index++) {
 			System.out.println(index);
 
-			if (index % 500 == 0 && index != 5000) {
+			if (index % 500 == 0 && index != 0) {
 				start += 500;
 				count = 0;
 				candidates = entityApi.search(
@@ -241,7 +241,7 @@ public class EmailDate {
 							.stream()
 							.filter(h -> (h.getName().equals("To") && h
 									.getValue().toLowerCase()
-									.contains("jibu.george@314ecorp.com"))
+									.contains("bullhorn@314ecorp.com"))
 									|| (h.getName().equalsIgnoreCase("Cc") && h
 											.getValue().toLowerCase()
 											.contains("bullhorn@314ecorp.com")))
@@ -283,7 +283,14 @@ public class EmailDate {
 							&& date.getValue().charAt(0) != 'F') {
 						dateFormat = new SimpleDateFormat(
 								"dd MMM yyyy HH:mm:ss ZZZZ");
-					} else {
+					} else if (date.getValue().charAt(8) == '0' || date.getValue().charAt(8) == '1' ) {
+						
+						dateFormat = new SimpleDateFormat(
+								"EEE, dd MM yyyy HH:mm:ss");
+						
+						
+					} else
+					{
 						dateFormat = new SimpleDateFormat(
 								"EEE, dd MMM yyyy HH:mm:ss ZZZZ");
 					}
