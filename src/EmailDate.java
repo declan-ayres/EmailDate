@@ -113,20 +113,29 @@ public class EmailDate {
 
 		gmail = new Gmail.Builder(httpTransport, JSON_FACTORY, credential)
 				.setApplicationName(APP_NAME).build();
-
+		
+		//date to be updated
 		DateFormat dateFormat = new SimpleDateFormat(
 				"EEE, dd MMM yyyy HH:mm:ss ZZZZ");
 		Date parsedDate;
-
+		
+		
+		//searches emails with query date from one month ago
+		Date queryDate = new Date();
+		queryDate.setMonth(queryDate.getMonth()-1);
+		DateFormat queryFormat = new SimpleDateFormat("yyyy/MM/dd");
+		String queryDateString = queryFormat.format(queryDate);
+		
+		
 		long time;
 
 		int i = 1;
 		final String useremail = "declan.ayres@314ecorp.com";
 		ListMessagesResponse list = gmail.users().messages()
 				.list("bullhorn@314ecorp.com")
-				.setQ("in:inbox from:" + "(+" + useremail + ") after:2014/6/9")
+				.setQ("in:inbox from:" + "(+" + useremail + ") after:" + queryDateString)
 				.execute();
-		String query = "in:inbox from:" + "(+" + useremail + ") after:2014/6/9";
+		String query = "in:inbox from:" + "(+" + useremail + ") after:" + queryDateString;
 
 		int count = 0;
 
@@ -153,45 +162,45 @@ public class EmailDate {
 			// find out which emails the candidate has
 			if (email != "" && email2 == ""
 					&& (email3 == "" || email3.equals("Not Applicable"))) {
-				query = "in:inbox from:" + "(+" + email + ") after:2014/6/9";
+				query = "in:inbox from:" + "(+" + email + ") after:" + queryDateString;
 				list = gmail
 						.users()
 						.messages()
 						.list("bullhorn@314ecorp.com")
 						.setQ("in:inbox from:" + "(+" + email
-								+ ") after:2014/6/9").execute();
+								+ ") after:" + queryDateString).execute();
 			} else if (email != "" && email2 != ""
 					&& (email3 == "" || email3.equals("Not Applicable"))) {
 				query = "in:inbox (from:" + "(+" + email + ") OR from:" + "(+"
-						+ email2 + ")) after:2014/6/9";
+						+ email2 + ")) after:" + queryDateString;
 				list = gmail
 						.users()
 						.messages()
 						.list("bullhorn@314ecorp.com")
 						.setQ("in:inbox (from:" + "(+" + email + ") OR from:"
-								+ "(+" + email2 + ")) after:2014/6/9")
+								+ "(+" + email2 + ")) after:" + queryDateString)
 						.execute();
 			} else if (email != "" && email2 == "" && email3 != "") {
 				query = "in:inbox (from:" + "(+" + email + ") OR from:" + "(+"
-						+ email3 + ")) after:2014/6/9";
+						+ email3 + ")) after:" + queryDateString;
 				list = gmail
 						.users()
 						.messages()
 						.list("bullhorn@314ecorp.com")
 						.setQ("in:inbox (from:" + "(+" + email + ") OR from:"
-								+ "(+" + email3 + ")) after:2014/6/9")
+								+ "(+" + email3 + ")) after:" + queryDateString)
 						.execute();
 			} else if (email != "" && email2 != "" && email3 != "") {
 				query = "in:inbox (from:" + "(+" + email + ") OR from:" + "(+"
 						+ email2 + ") OR from:" + "(+" + email3
-						+ ")) after:2014/6/9";
+						+ ")) after:" + queryDateString;
 				list = gmail
 						.users()
 						.messages()
 						.list("bullhorn@314ecorp.com")
 						.setQ("in:inbox (from:" + "(+" + email + ") OR from:"
 								+ "(+" + email2 + ") OR from:" + "(+" + email3
-								+ ")) after:2014/6/9").execute();
+								+ ")) after:" + queryDateString).execute();
 			} else if (email == "" && email2 == ""
 					&& (email3 == "" || email3.equals("Not Applicable"))) {
 				System.out.println(candidates.path("data").get(count)
@@ -203,14 +212,14 @@ public class EmailDate {
 			} else {
 				query = "in:inbox (from:" + "(+" + email + ") OR from:" + "(+"
 						+ email2 + ") OR from:" + "(+" + email3
-						+ ")) after:2014/6/9";
+						+ ")) after:" + queryDateString;
 				list = gmail
 						.users()
 						.messages()
 						.list("bullhorn@314ecorp.com")
 						.setQ("in:inbox (from:" + "(+" + email + ") OR from:"
 								+ "(+" + email2 + ") OR from:" + "(+" + email3
-								+ ")) after:2014/6/9").execute();
+								+ ")) after:" + queryDateString).execute();
 			}
 
 			// Copy the list contents into a for-loop-readable arraylist

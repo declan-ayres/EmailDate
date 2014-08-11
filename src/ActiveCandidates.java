@@ -68,6 +68,8 @@ public class ActiveCandidates {
 			} else {
 
 				switching++;
+				//entityApi.update(BHRestApi.Entity.ENTITY_TYPE.CANDIDATE,restToken, candidates.path("data").get(count).path("id").asInt(),
+				//((ObjectNode) candidates.path("data").get(count)).put("status", ""));
 			}
 			System.out.println(i);
 			count++;
